@@ -1,6 +1,8 @@
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
+import static java.lang.Integer.parseInt;
+
 public class PercolationStats {
     private final double CI = 1.96;
     private double[] openPercentages;
@@ -15,7 +17,7 @@ public class PercolationStats {
         this.mcSimSize = n;
         this.trials = trials;
         this.openPercentages = new double[trials];
-        this.runMonteCarlo();
+        this.runSimulations();
     }
 
     public double mean() {
@@ -38,7 +40,7 @@ public class PercolationStats {
         return (this.mean() + ((this.CI * this.stddev())/(Math.sqrt(this.trials))));
     }
 
-    private void runMonteCarlo() {
+    private void runSimulations() {
         for (int i = 0; i < this.trials; i++) {
             this.percolation = new Percolation(this.mcSimSize);
             this.openPercentages[i] =  ((double) percolation.numberOfOpenSites()) / (this.mcSimSize * mcSimSize);
@@ -46,7 +48,11 @@ public class PercolationStats {
     }
 
     public static void main(String[] args) {
-
+        int size = parseInt(args[0]);
+        int trials = parseInt(args[1]);
+        PercolationStats percolationStats = new PercolationStats(size, trials);
+        System.out.println("Mean = " + String.valueOf(percolationStats.mean()));
+        System.out.println("Stddev = " + String.valueOf(percolationStats.stddev()));
+        System.out.println("95% Confidence Interval = [" + String.valueOf(percolationStats.confidenceLo() + ", " + String.valueOf(percolationStats.confidenceHi()) + "]"));
     }
-
 }

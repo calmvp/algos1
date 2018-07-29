@@ -18,11 +18,7 @@ public class Percolation {
         this.grid = new boolean[gridSize][gridSize];
         this.weightedQuickUnionUF = new WeightedQuickUnionUF(gridSize * gridSize + 2);
         this.virutalBottom = gridSize * gridSize + 1;
-        while (this.percolates() != true) {
-            int row = StdRandom.uniform(1, n + 1);
-            int col = StdRandom.uniform(1, n + 1);
-            this.open(row, col);
-        }
+        this.runMonteCarlo();
     }
 
     public void open (int row, int col) throws IllegalArgumentException {
@@ -78,6 +74,14 @@ public class Percolation {
 
     public boolean percolates() {
         return this.weightedQuickUnionUF.connected(this.VIRTUAL_TOP, this.virutalBottom);
+    }
+
+    private void runMonteCarlo() {
+        while (this.percolates() != true) {
+            int row = StdRandom.uniform(1, this.gridSize + 1);
+            int col = StdRandom.uniform(1, this.gridSize+ 1);
+            this.open(row, col);
+        }
     }
 
     private int mapGridCoordsToUfIndex(int row, int col) {
