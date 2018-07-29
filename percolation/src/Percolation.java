@@ -46,6 +46,22 @@ public class Percolation {
         return this.grid[adjustedRow][adjustedCol];
     }
 
+    public boolean isFull(int row, int col) throws IllegalArgumentException {
+        if (row <=0 || col <= 0) {
+            throw new java.lang.IllegalArgumentException("requested row and/or column must be within the grid");
+        }
+        int ufIndex = this.mapGridCoordsToUfIndex(row, col);
+        return this.weightedQuickUnionUF.connected(ufIndex, this.VIRTUAL_TOP);
+    }
+
+    public int numberOfOpenSites() {
+        return this.weightedQuickUnionUF.count();
+    }
+
+    public boolean percolates() {
+        return this.weightedQuickUnionUF.connected(this.VIRTUAL_TOP, this.virutalBottom);
+    }
+    
     private int mapGridCoordsToUfIndex(int row, int col) {
         return (this.gridSize * (row - 1)) + col;
     }
@@ -60,7 +76,7 @@ public class Percolation {
     private void connectAbove(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
         // connect to virtual top if top row
         if (row == 1) {
-            this.weightedQuickUnionUF.union(mappedIndex, VIRTUAL_TOP);
+            this.weightedQuickUnionUF.union(mappedIndex, this.VIRTUAL_TOP);
         } else {
             // verify element above is open. If so, connect them.
             if (this.grid[adjustedRow + 1][adjustedCol] == true) {
@@ -95,6 +111,7 @@ public class Percolation {
             this.weightedQuickUnionUF.union(mappedIndex, elementLeft);
         }
     }
+
     public static void main(String[] args) {
         Percolation perco = new Percolation(5);
         System.out.println(Arrays.toString(perco.grid[0]));
