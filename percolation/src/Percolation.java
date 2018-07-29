@@ -1,8 +1,6 @@
 import java.util.Arrays;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
-
 public class Percolation {
     private final int VIRTUAL_TOP = 0;
     private int virutalBottom;
@@ -22,7 +20,7 @@ public class Percolation {
         this.virutalBottom = gridSize * gridSize + 1;
     }
 
-    public void open (int row, int col) {
+    public void open (int row, int col) throws IllegalArgumentException {
         if (row <= 0 || col <= 0 ) {
             throw new java.lang.IllegalArgumentException("requested row and column must be greater than 0");
         }
@@ -33,56 +31,67 @@ public class Percolation {
         int adjustedRow = row - 1;
         int adjustedCol = col - 1;
         this.grid[adjustedRow][adjustedCol] = true;
+
         int ufIndex = this.mapGridCoordsToUfIndex(row, col);
-        this.connectAdjacentElements(adjustedRow, adjustedCol, ufIndex);
+        this.connectAdjacentElements(row, col, adjustedRow, adjustedCol, ufIndex);
+    }
+
+    public boolean isOpen(int row, int col) throws IllegalArgumentException {
+        if (row <= 0 || col <=0) {
+            throw new java.lang.IllegalArgumentException("requested row and/or column must be within the grid");
+        }
+
+        int adjustedRow = row - 1;
+        int adjustedCol = col - 1;
+        return this.grid[adjustedRow][adjustedCol];
     }
 
     private int mapGridCoordsToUfIndex(int row, int col) {
         return (this.gridSize * (row - 1)) + col;
     }
 
-    private void connectAdjacentElements(int adjustedRow, int adjustedCol, int mappedIndex){
-        this.connectAbove(adjustedRow, adjustedCol, mappedIndex);
-        this.connectBelow(adjustedRow, adjustedCol, mappedIndex);
-        this.connectLeft(adjustedRow, adjustedCol, mappedIndex);
-        this.connectRight(adjustedRow, adjustedCol, mappedIndex);
+    private void connectAdjacentElements(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex){
+        this.connectAbove(row, col, adjustedRow, adjustedCol, mappedIndex);
+        this.connectBelow(row, col, adjustedRow, adjustedCol, mappedIndex);
+        this.connectLeft(row, col, adjustedRow, adjustedCol, mappedIndex);
+        this.connectRight(row, col, adjustedRow, adjustedCol, mappedIndex);
     }
 
-    private void connectAbove(int adjustedRow, int adjustedCol, int mappedIndex) {
+    private void connectAbove(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
         // connect to virtual top if top row
-        if (adjustedRow == 1) {
+        if (row == 1) {
             this.weightedQuickUnionUF.union(mappedIndex, VIRTUAL_TOP);
         } else {
             // verify element above is open. If so, connect them.
             if (this.grid[adjustedRow + 1][adjustedCol] == true) {
-                int elementAboveIndex = this.mapGridCoordsToUfIndex(adjustedRow + 1, adjustedCol);
+                int elementAboveIndex = this.mapGridCoordsToUfIndex(row -1, col);
                 this.weightedQuickUnionUF.union(mappedIndex, elementAboveIndex);
             }
         }
     }
 
-    private void connectBelow(int adjustedRow, int adjustedCol, int mappedIndex) {
-        if (adjustedRow == gridSize * gridSize) {
+    private void connectBelow(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
+        if (row == this.gridSize) {
             this.weightedQuickUnionUF.union(mappedIndex, this.virutalBottom);
         } else {
             if (this.grid[adjustedRow - 1][adjustedCol] == true) {
-                int elementBelowIndex = this.mapGridCoordsToUfIndex( adjustedRow - 1, adjustedCol);
+                int elementBelowIndex = this.mapGridCoordsToUfIndex( row + 1, col);
                 this.weightedQuickUnionUF.union(mappedIndex, elementBelowIndex);
             }
         }
 
     }
 
-    private void connectRight(int adjustedRow, int adjustedCol, int mappedIndex){
-        if (adjustedCol < this.gridSize && this.grid[adjustedRow][adjustedCol + 1]){
-            int elementRight = this.mapGridCoordsToUfIndex(adjustedRow, adjustedCol + 1);
+    private void connectRight(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex){
+        if (col < this.gridSize && this.grid[adjustedRow][adjustedCol + 1]){
+            int elementRight = this.mapGridCoordsToUfIndex(row, col + 1);
             this.weightedQuickUnionUF.union(mappedIndex, elementRight);
         }
     }
 
-    private void connectLeft(int adjustedRow, int adjustedCol, int mappedIndex) {
-        if (adjustedCol > 1 && this.grid[adjustedRow][adjustedCol - 1] == true) {
-            int elementLeft = this.mapGridCoordsToUfIndex(adjustedRow, adjustedCol -1);
+    private void connectLeft(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
+        if (col > 1 && this.grid[adjustedRow][adjustedCol - 1] == true) {
+            int elementLeft = this.mapGridCoordsToUfIndex(row, col -1);
             this.weightedQuickUnionUF.union(mappedIndex, elementLeft);
         }
     }
