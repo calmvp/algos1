@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class Percolation {
     private final int VIRTUAL_TOP = 0;
@@ -25,15 +26,18 @@ public class Percolation {
             throw new java.lang.IllegalArgumentException("requested row and column must be greater than 0");
         }
 
-        if (row >= this.gridSize || col >= this.gridSize){
+        if (row > this.gridSize || col > this.gridSize){
             throw new java.lang.IllegalArgumentException("requested row and column may not exceed the grid size");
         }
         int adjustedRow = row - 1;
         int adjustedCol = col - 1;
-        this.grid[adjustedRow][adjustedCol] = true;
+        if (!this.grid[adjustedRow][adjustedCol]) {
 
-        int ufIndex = this.mapGridCoordsToUfIndex(row, col);
-        this.connectAdjacentElements(row, col, adjustedRow, adjustedCol, ufIndex);
+            this.grid[adjustedRow][adjustedCol] = true;
+
+            int ufIndex = this.mapGridCoordsToUfIndex(row, col);
+            this.connectAdjacentElements(row, col, adjustedRow, adjustedCol, ufIndex);
+        }
     }
 
     public boolean isOpen(int row, int col) throws IllegalArgumentException {
@@ -55,13 +59,23 @@ public class Percolation {
     }
 
     public int numberOfOpenSites() {
-        return this.weightedQuickUnionUF.count();
+        int count = 0;
+        for (int i=0; i < this.grid.length; i++) {
+           for (int j=0; j < this.grid[i].length; j++){
+                if (this.grid[i][j] == true) {
+                    count ++;
+                }
+
+            }
+
+        }
+        return count;
     }
 
     public boolean percolates() {
         return this.weightedQuickUnionUF.connected(this.VIRTUAL_TOP, this.virutalBottom);
     }
-    
+
     private int mapGridCoordsToUfIndex(int row, int col) {
         return (this.gridSize * (row - 1)) + col;
     }
@@ -79,7 +93,7 @@ public class Percolation {
             this.weightedQuickUnionUF.union(mappedIndex, this.VIRTUAL_TOP);
         } else {
             // verify element above is open. If so, connect them.
-            if (this.grid[adjustedRow + 1][adjustedCol] == true) {
+            if (this.grid[adjustedRow - 1][adjustedCol] == true) {
                 int elementAboveIndex = this.mapGridCoordsToUfIndex(row -1, col);
                 this.weightedQuickUnionUF.union(mappedIndex, elementAboveIndex);
             }
@@ -90,7 +104,7 @@ public class Percolation {
         if (row == this.gridSize) {
             this.weightedQuickUnionUF.union(mappedIndex, this.virutalBottom);
         } else {
-            if (this.grid[adjustedRow - 1][adjustedCol] == true) {
+            if (this.grid[adjustedRow + 1][adjustedCol] == true) {
                 int elementBelowIndex = this.mapGridCoordsToUfIndex( row + 1, col);
                 this.weightedQuickUnionUF.union(mappedIndex, elementBelowIndex);
             }
@@ -113,7 +127,27 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        Percolation perco = new Percolation(5);
-        System.out.println(Arrays.toString(perco.grid[0]));
+        int n = 3;
+        Percolation perco = new Percolation(n);
+        //StdRandom random = StdRandom;
+//        System.out.println(Arrays.toString(perco.grid[0]));
+//        perco.open(1,1);
+//        perco.open(2,1);
+//        perco.open(3, 1);
+//        perco.open(4, 1);
+//        perco.open(5, 1);
+        while (perco.percolates() != true) {
+            int row = StdRandom.uniform(1, n);
+            int col = StdRandom.uniform(1, n);
+            perco.open(row, col);
+            System.out.println(row);
+            System.out.println(col);
+            System.out.println(perco.percolates());
+            System.out.println(perco.numberOfOpenSites());
+        }
+
+        System.out.println(perco.numberOfOpenSites());
+        float per = perco.numberOfOpenSites()/(n*n);
+        System.out.println(per);
     }
 }
