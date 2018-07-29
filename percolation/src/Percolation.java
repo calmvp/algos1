@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -7,7 +6,7 @@ public class Percolation {
     private int virutalBottom;
     private int gridSize;
     private WeightedQuickUnionUF weightedQuickUnionUF;
-    public boolean[][] grid;
+    private boolean[][] grid;
 
 
     public Percolation(int n) throws IllegalArgumentException {
@@ -19,6 +18,11 @@ public class Percolation {
         this.grid = new boolean[gridSize][gridSize];
         this.weightedQuickUnionUF = new WeightedQuickUnionUF(gridSize * gridSize + 2);
         this.virutalBottom = gridSize * gridSize + 1;
+        while (this.percolates() != true) {
+            int row = StdRandom.uniform(1, n + 1);
+            int col = StdRandom.uniform(1, n + 1);
+            this.open(row, col);
+        }
     }
 
     public void open (int row, int col) throws IllegalArgumentException {
@@ -125,27 +129,17 @@ public class Percolation {
             this.weightedQuickUnionUF.union(mappedIndex, elementLeft);
         }
     }
-
-    public static void main(String[] args) {
-        int n = 20;
-        Percolation perco = new Percolation(n);
-        //StdRandom random = StdRandom;
-//        System.out.println(Arrays.toString(perco.grid[0]));
-//        perco.open(1,1);
-//        perco.open(2,1);
-//        perco.open(3, 1);
-//        perco.open(4, 1);
-//        perco.open(5, 1);
-        while (perco.percolates() != true) {
-            int row = StdRandom.uniform(1, n + 1);
-            int col = StdRandom.uniform(1, n + 1);
-            perco.open(row, col);
-//            System.out.println(row);
-//            System.out.println(col);
-//            System.out.println(perco.percolates());
-           System.out.println(perco.numberOfOpenSites());
-        }
-
-        System.out.println(perco.numberOfOpenSites());
-    }
+//    public static void main(String[] args) {
+//        int n = 100;
+//        Percolation perco = new Percolation(n);
+//        while (perco.percolates() != true) {
+//            int row = StdRandom.uniform(1, n + 1);
+//            int col = StdRandom.uniform(1, n + 1);
+//            perco.open(row, col);
+//        }
+//        int x = perco.numberOfOpenSites();
+//        System.out.println(x);
+//        float percentage = ((float) x) / (n*n);
+//        System.out.println(percentage);
+//    }
 }
