@@ -127,7 +127,7 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        int n = 3;
+        int n = 20;
         Percolation perco = new Percolation(n);
         //StdRandom random = StdRandom;
 //        System.out.println(Arrays.toString(perco.grid[0]));
@@ -137,17 +137,15 @@ public class Percolation {
 //        perco.open(4, 1);
 //        perco.open(5, 1);
         while (perco.percolates() != true) {
-            int row = StdRandom.uniform(1, n);
-            int col = StdRandom.uniform(1, n);
+            int row = StdRandom.uniform(1, n + 1);
+            int col = StdRandom.uniform(1, n + 1);
             perco.open(row, col);
-            System.out.println(row);
-            System.out.println(col);
-            System.out.println(perco.percolates());
-            System.out.println(perco.numberOfOpenSites());
+//            System.out.println(row);
+//            System.out.println(col);
+//            System.out.println(perco.percolates());
+           System.out.println(perco.numberOfOpenSites());
         }
 
         System.out.println(perco.numberOfOpenSites());
-        float per = perco.numberOfOpenSites()/(n*n);
-        System.out.println(per);
     }
 }
