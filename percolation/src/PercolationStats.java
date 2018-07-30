@@ -11,7 +11,7 @@ public class PercolationStats {
     private Percolation percolation;
 
     public PercolationStats(int n, int trials) {
-        if (n <= 0 || n <= trials) {
+        if (n <= 0 || trials <= 0) {
             throw new java.lang.IllegalArgumentException("Submitted number and trials must both be greater than 0.");
         }
         this.mcSimSize = n;
@@ -29,14 +29,10 @@ public class PercolationStats {
     }
 
     public double confidenceLo() {
-        double mean = this.mean();
-        double std = this.stddev();
         return (this.mean() - ((this.CI * this.stddev())/(Math.sqrt(this.trials))));
     }
 
     public double confidenceHi() {
-        double mean = this.mean();
-        double std = this.stddev();
         return (this.mean() + ((this.CI * this.stddev())/(Math.sqrt(this.trials))));
     }
 
