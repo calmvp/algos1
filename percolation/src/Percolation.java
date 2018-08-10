@@ -5,6 +5,7 @@ public class Percolation {
     private final int VIRTUAL_TOP = 0;
     private int virutalBottom;
     private int gridSize;
+    private int openSites = 0;
     private WeightedQuickUnionUF weightedQuickUnionUF;
     private boolean[][] grid;
 
@@ -34,7 +35,7 @@ public class Percolation {
         if (!this.grid[adjustedRow][adjustedCol]) {
 
             this.grid[adjustedRow][adjustedCol] = true;
-
+            this.openSites += 1;
             int ufIndex = this.mapGridCoordsToUfIndex(row, col);
             this.connectAdjacentElements(row, col, adjustedRow, adjustedCol, ufIndex);
         }
@@ -59,17 +60,7 @@ public class Percolation {
     }
 
     public int numberOfOpenSites() {
-        int count = 0;
-        for (int i=0; i < this.grid.length; i++) {
-           for (int j=0; j < this.grid[i].length; j++){
-                if (this.grid[i][j] == true) {
-                    count ++;
-                }
-
-            }
-
-        }
-        return count;
+        return this.openSites;
     }
 
     public boolean percolates() {
@@ -133,17 +124,4 @@ public class Percolation {
             this.weightedQuickUnionUF.union(mappedIndex, elementLeft);
         }
     }
-//    public static void main(String[] args) {
-//        int n = 100;
-//        Percolation perco = new Percolation(n);
-//        while (perco.percolates() != true) {
-//            int row = StdRandom.uniform(1, n + 1);
-//            int col = StdRandom.uniform(1, n + 1);
-//            perco.open(row, col);
-//        }
-//        int x = perco.numberOfOpenSites();
-//        System.out.println(x);
-//        float percentage = ((float) x) / (n*n);
-//        System.out.println(percentage);
-//    }
 }
