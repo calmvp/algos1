@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-import edu.princeton.cs.algs4.StdRandom;
 
 public class Percolation {
     private static final int VIRTUAL_TOP = 0;
@@ -19,7 +18,6 @@ public class Percolation {
         this.grid = new boolean[gridSize][gridSize];
         this.weightedQuickUnionUF = new WeightedQuickUnionUF(gridSize * gridSize + 2);
         this.virutalBottom = gridSize * gridSize + 1;
-        this.runMonteCarlo();
     }
 
     public void open(int row, int col) {
@@ -65,14 +63,6 @@ public class Percolation {
 
     public boolean percolates() {
         return this.weightedQuickUnionUF.connected(VIRTUAL_TOP, this.virutalBottom);
-    }
-
-    private void runMonteCarlo() {
-        while (!this.percolates()) {
-            int row = StdRandom.uniform(1, this.gridSize + 1);
-            int col = StdRandom.uniform(1, this.gridSize+ 1);
-            this.open(row, col);
-        }
     }
 
     private int mapGridCoordsToUfIndex(int row, int col) {

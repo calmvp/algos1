@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
@@ -35,6 +36,11 @@ public class PercolationStats {
     private void runSimulations() {
         for (int i = 0; i < this.trials; i++) {
             Percolation percolation = new Percolation(this.mcSimSize);
+            while (!percolation.percolates()) {
+                int row = StdRandom.uniform(1, this.mcSimSize + 1);
+                int col = StdRandom.uniform(1, this.mcSimSize+ 1);
+                percolation.open(row, col);
+            }
             this.openPercentages[i] =  ((double) percolation.numberOfOpenSites()) / (this.mcSimSize * mcSimSize);
         }
     }
@@ -42,9 +48,6 @@ public class PercolationStats {
     public static void main(String[] args) {
         int size = Integer.parseInt(args[0]);
         int trials = Integer.parseInt(args[1]);
-        PercolationStats percolationStats = new PercolationStats(size, trials);
-        System.out.println("Mean = " + percolationStats.mean());
-        System.out.println("Stddev = " + percolationStats.stddev());
-        System.out.println("95% Confidence Interval = [" + percolationStats.confidenceLo() + ", " + percolationStats.confidenceHi() + "]");
+        new PercolationStats(size, trials);
     }
 }
