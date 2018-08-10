@@ -2,7 +2,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 import edu.princeton.cs.algs4.StdRandom;
 
 public class Percolation {
-    private final int VIRTUAL_TOP = 0;
+    private static final int VIRTUAL_TOP = 0;
     private int virutalBottom;
     private int gridSize;
     private int openSites = 0;
@@ -10,7 +10,7 @@ public class Percolation {
     private boolean[][] grid;
 
 
-    public Percolation(int n) throws IllegalArgumentException {
+    public Percolation(int n) {
         if (n <= 0) {
             throw new java.lang.IllegalArgumentException("n must be greater than 0");
         }
@@ -22,12 +22,12 @@ public class Percolation {
         this.runMonteCarlo();
     }
 
-    public void open (int row, int col) throws IllegalArgumentException {
-        if (row <= 0 || col <= 0 ) {
+    public void open(int row, int col) {
+        if (row <= 0 || col <= 0) {
             throw new java.lang.IllegalArgumentException("requested row and column must be greater than 0");
         }
 
-        if (row > this.gridSize || col > this.gridSize){
+        if (row > this.gridSize || col > this.gridSize) {
             throw new java.lang.IllegalArgumentException("requested row and column may not exceed the grid size");
         }
         int adjustedRow = row - 1;
@@ -41,8 +41,8 @@ public class Percolation {
         }
     }
 
-    public boolean isOpen(int row, int col) throws IllegalArgumentException {
-        if (row <= 0 || col <=0) {
+    public boolean isOpen(int row, int col) {
+        if (row <= 0 || col <= 0) {
             throw new java.lang.IllegalArgumentException("requested row and/or column must be within the grid");
         }
 
@@ -51,12 +51,12 @@ public class Percolation {
         return this.grid[adjustedRow][adjustedCol];
     }
 
-    public boolean isFull(int row, int col) throws IllegalArgumentException {
-        if (row <=0 || col <= 0) {
+    public boolean isFull(int row, int col) {
+        if (row <= 0 || col <= 0) {
             throw new java.lang.IllegalArgumentException("requested row and/or column must be within the grid");
         }
         int ufIndex = this.mapGridCoordsToUfIndex(row, col);
-        return this.weightedQuickUnionUF.connected(ufIndex, this.VIRTUAL_TOP);
+        return this.weightedQuickUnionUF.connected(ufIndex, VIRTUAL_TOP);
     }
 
     public int numberOfOpenSites() {
@@ -64,11 +64,11 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        return this.weightedQuickUnionUF.connected(this.VIRTUAL_TOP, this.virutalBottom);
+        return this.weightedQuickUnionUF.connected(VIRTUAL_TOP, this.virutalBottom);
     }
 
     private void runMonteCarlo() {
-        while (this.percolates() != true) {
+        while (!this.percolates()) {
             int row = StdRandom.uniform(1, this.gridSize + 1);
             int col = StdRandom.uniform(1, this.gridSize+ 1);
             this.open(row, col);
@@ -79,7 +79,7 @@ public class Percolation {
         return (this.gridSize * (row - 1)) + col;
     }
 
-    private void connectAdjacentElements(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex){
+    private void connectAdjacentElements(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
         this.connectAbove(row, col, adjustedRow, adjustedCol, mappedIndex);
         this.connectBelow(row, col, adjustedRow, adjustedCol, mappedIndex);
         this.connectLeft(row, col, adjustedRow, adjustedCol, mappedIndex);
@@ -89,10 +89,10 @@ public class Percolation {
     private void connectAbove(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
         // connect to virtual top if top row
         if (row == 1) {
-            this.weightedQuickUnionUF.union(mappedIndex, this.VIRTUAL_TOP);
+            this.weightedQuickUnionUF.union(mappedIndex, VIRTUAL_TOP);
         } else {
             // verify element above is open. If so, connect them.
-            if (this.grid[adjustedRow - 1][adjustedCol] == true) {
+            if (this.grid[adjustedRow - 1][adjustedCol]) {
                 int elementAboveIndex = this.mapGridCoordsToUfIndex(row -1, col);
                 this.weightedQuickUnionUF.union(mappedIndex, elementAboveIndex);
             }
@@ -103,23 +103,23 @@ public class Percolation {
         if (row == this.gridSize) {
             this.weightedQuickUnionUF.union(mappedIndex, this.virutalBottom);
         } else {
-            if (this.grid[adjustedRow + 1][adjustedCol] == true) {
-                int elementBelowIndex = this.mapGridCoordsToUfIndex( row + 1, col);
+            if (this.grid[adjustedRow + 1][adjustedCol]) {
+                int elementBelowIndex = this.mapGridCoordsToUfIndex(row + 1, col);
                 this.weightedQuickUnionUF.union(mappedIndex, elementBelowIndex);
             }
         }
 
     }
 
-    private void connectRight(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex){
-        if (col < this.gridSize && this.grid[adjustedRow][adjustedCol + 1]){
+    private void connectRight(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
+        if (col < this.gridSize && this.grid[adjustedRow][adjustedCol + 1]) {
             int elementRight = this.mapGridCoordsToUfIndex(row, col + 1);
             this.weightedQuickUnionUF.union(mappedIndex, elementRight);
         }
     }
 
     private void connectLeft(int row, int col, int adjustedRow, int adjustedCol, int mappedIndex) {
-        if (col > 1 && this.grid[adjustedRow][adjustedCol - 1] == true) {
+        if (col > 1 && this.grid[adjustedRow][adjustedCol - 1]) {
             int elementLeft = this.mapGridCoordsToUfIndex(row, col -1);
             this.weightedQuickUnionUF.union(mappedIndex, elementLeft);
         }

@@ -1,13 +1,10 @@
 import edu.princeton.cs.algs4.StdStats;
 
-import static java.lang.Integer.parseInt;
-
 public class PercolationStats {
-    private final double CI = 1.96;
+    private static final double CI = 1.96;
     private double[] openPercentages;
     private int mcSimSize;
     private int trials;
-    private Percolation percolation;
 
     public PercolationStats(int n, int trials) {
         if (n <= 0 || trials <= 0) {
@@ -37,14 +34,14 @@ public class PercolationStats {
 
     private void runSimulations() {
         for (int i = 0; i < this.trials; i++) {
-            this.percolation = new Percolation(this.mcSimSize);
+            Percolation percolation = new Percolation(this.mcSimSize);
             this.openPercentages[i] =  ((double) percolation.numberOfOpenSites()) / (this.mcSimSize * mcSimSize);
         }
     }
 
     public static void main(String[] args) {
-        int size = parseInt(args[0]);
-        int trials = parseInt(args[1]);
+        int size = Integer.parseInt(args[0]);
+        int trials = Integer.parseInt(args[1]);
         PercolationStats percolationStats = new PercolationStats(size, trials);
         System.out.println("Mean = " + String.valueOf(percolationStats.mean()));
         System.out.println("Stddev = " + String.valueOf(percolationStats.stddev()));
