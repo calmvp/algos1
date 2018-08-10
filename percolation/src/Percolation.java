@@ -3,10 +3,10 @@ import edu.princeton.cs.algs4.StdRandom;
 
 public class Percolation {
     private static final int VIRTUAL_TOP = 0;
-    private int virutalBottom;
-    private int gridSize;
+    private final int virutalBottom;
+    private final int gridSize;
     private int openSites = 0;
-    private WeightedQuickUnionUF weightedQuickUnionUF;
+    private final WeightedQuickUnionUF weightedQuickUnionUF;
     private boolean[][] grid;
 
 
